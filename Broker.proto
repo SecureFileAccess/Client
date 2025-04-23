@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package Broker;
+
+service BrokerProto {
+  // Stream from client to broker (used for registration and receiving commands)
+  rpc ConnectClient(stream ClientMessage) returns (stream BrokerMessage);
+  
+  // Invoked by the ASP.NET frontend to send a request to a client
+  rpc ForwardToClient(ClientCommand) returns (ClientResponse);
+}
+
+message ClientMessage {
+  string clientId = 1;
+  oneof payload {
+    FileResponse fileResponse = 2;
+    Heartbeat heartbeat = 3;
+  }
+}
+
+message BrokerMessage {
+  oneof command {
+    FileCommand fileCommand = 1;
+  }
+}
+
+message ClientCommand {
+  string clientId = 1;
+  FileCommand command = 2;
+}
+
+message ClientResponse {
+  string clientId = 1;
+  FileResponse response = 2;
+}
+
+message FileCommand {
+  string action = 1; // "save" or "read"
+  string filePath = 2;
+  string content = 3; // Only for save
+}
+
+message FileResponse {
+  bool success = 1;
+  string content = 2; // Only for read
+  string message = 3;
+}
+
+message Heartbeat {
+  int64 timestamp = 1;
+}
