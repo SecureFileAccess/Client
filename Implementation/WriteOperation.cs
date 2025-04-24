@@ -3,6 +3,7 @@ using Client.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,7 +24,8 @@ namespace Client.Implementation
                 return new FileResponse
                 {
                     Success = true,
-                    Message = "Write successful."
+                    Message = "Write successful.",
+                    Content = Google.Protobuf.ByteString.CopyFromUtf8(contentString),
                 };
             }
             catch (Exception ex)
